@@ -130,11 +130,13 @@ create table products(
 );
 
 create table products_customers(
-  id_product integer not null,
   id_customer integer not null,
+  id_product integer not null,
   
+  foreign key (id_customer) references customers (id_customer),
   foreign key (id_product) references products (id_product),
-  foreign key (id_customer) references customers (id_customer)
+  
+  primary key (id_customer, id_product)
 );
 
 create table invoices(
