@@ -55,7 +55,7 @@ insert into countries (name) values ('alemania') ,
 
 select * from countries;
 
-insert into priorities (type_name) values ('alta') , ('media') , ('baja');
+insert into priorities (type_name) values ('high') , ('medium') , ('low');
 
 insert into contact_request (id_country, id_priority, name, detail, physical_address)
 values (1, 1, 'Amanda Johnson', 'Product Manager', 'Oficina 312, Edf. Briize, Buenos Aires, Argentina'),
@@ -92,7 +92,7 @@ create table discounts(
 
 create table payments(
   id_payment serial primary key,
-  type varchar(100) not null
+  type_op varchar(100) not null
 );
 
 create table customers(
@@ -130,13 +130,11 @@ create table products(
 );
 
 create table products_customers(
-  id_customer integer not null,
   id_product integer not null,
+  id_customer integer not null,
   
-  foreign key (id_customer) references customers (id_customer),
   foreign key (id_product) references products (id_product),
-  
-  primary key (id_customer, id_product)
+  foreign key (id_customer) references customers (id_customer)
 );
 
 create table invoices(
@@ -163,3 +161,66 @@ create table orders(
   foreign key (id_invoice) references invoices (id_invoice),
   foreign key (id_product) references products (id_product)
 );
+
+-- H-6
+insert into countries (name) values ('venezuela') , ('españa') , ('suiza');
+
+insert into users (id_country, email, name) values
+(9, 'dominguezperez@example.com', 'domper'),
+(8, 'viennaerika@example.com', 'erivien'),
+(6, 'johnsmithson@example.com', 'jonsmi');
+
+insert into priorities (type_name) values
+('none'), ('to-assign'), ('presidential-order');
+
+insert into contact_request (id_country, id_priority, name, detail, physical_address) values
+(7, 4, 'Kevin Excellent', 'Social Media Strategist', '18th Arrondissement - Butte-Montmartre'),
+(9, 1, 'Juana Rodríguez', 'CEO', 'Av. Urdaneta, Caracas'),
+(10, 5, 'Julio Banderas', 'Administrator', 'Gran Vía, Madrid');
+
+insert into roles (name) values ('guest') , ('common') , ('vip');
+
+insert into taxes (percentage) values (16), (12), (0);
+
+insert into offers (status) values ('available') , ('unavailable') , ('few left!');
+
+insert into discounts (status, percentage) values
+('available', 0) , ('available', 25) , ('unavailable', 40);
+
+insert into payments (type_op) values ('cash') , ('debit card') , ('credit card');
+
+insert into customers (email, id_country, id_role, name, age, password, physical_address) values
+('annayield@example.com', 1, 2, 'Anna Yield', 26, 'ayer1234', 'Av. Aguas Blancas'),
+('veromars@example.com', 4, 3, 'Veronika Marss', 41, 'entschuldigung', 'Av. Kevv'),
+('julesandanza@example.com', 10, 2, 'Jules Andanza', 39, 'ohrayos123', 'Edf. Grand, Av. Ule');
+
+insert into invoice_status (status) values
+('processed') , ('in process') , ('cancelled');
+
+insert into products (id_discount, id_offer, id_tax, name, details, minimum_stock, maximum_stock, current_stock, price, price_with_tax) values
+(1, 1, 1, 'hdd-4tb-ext-sea', 'External HDD 4TB Seagate', 5, 100, 20, 100, 116),
+(2, 2, 3, 'hdmi-cable-5m-gen', 'HDMI Cable 5 Meters Generic', 20, 400, 20, 10, 10),
+(2, 3, 1, 'ssd-512gb-int-kin', 'SSD 512GB Kingston', 2, 50, 3, 50, 58);
+
+insert into products_customers (id_product, id_customer) values (1, 2), (2, 1), (3, 3);
+
+insert into invoices (id_customer, id_payment, id_invoice_status, date, total_to_pay) values
+(1, 1, 2, '2025-06-05', 580.00),
+(2, 2, 3, '2025-06-06', 100.00),
+(3, 3, 1, '2025-06-07', 116.00);
+
+insert into orders (id_invoice, id_product, detail, amount, price) values
+(1, 1, '', 5, 116.00),
+(2, 2, '', 10, 10.00),
+(3, 3, '', 2, 58.00);
+
+delete from users where id_users = (select max(id_users) from users);
+delete from users where id_users = (select min(id_users) from users);
+
+update taxes set percentage = 18 where id_tax = 1;
+update taxes set percentage = 14 where id_tax = 2;
+update taxes set percentage = 5 where id_tax = 3;
+
+update products set price = 125, price_with_tax = 147.50 where id_product = 1;
+update products set price = 15, price_with_tax = 15.75 where id_product = 2;
+update products set price = 70, price_with_tax = 82.60 where id_product = 3;
